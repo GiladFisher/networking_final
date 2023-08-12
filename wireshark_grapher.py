@@ -39,7 +39,7 @@ def recording_to_csv(filename, recording):
     df.to_csv(filename, index=False)
 
 # recording_to_csv('filtered_recording_1.csv', 'filtered_recording_1.pcapng')
-
+# recording_to_csv('filtered_recording_2.csv', 'filtered_recording_2.pcapng')
 df = pd.read_csv('filtered_recording_1.csv')
 df['timestamp'] = pd.to_datetime(df['timestamp'])
 print(df.info())
@@ -77,7 +77,8 @@ for index, row in df.iterrows():
 
 result_df = pd.DataFrame({'start_time': start_times, 'total_length': total_lengths})
 # convert to MB
-result_df['total_length'] = result_df['total_length'] / 1048576
+result_df['total_length'] = result_df['total_length'] / 1048576  # convert to MB
+# result_df['total_length'] = result_df['total_length'] ** 0.5  # to make small values more visible
 print(result_df.head())
 print(result_df.info())
 print(result_df.describe())
