@@ -51,23 +51,47 @@ df['time_diff'] = df['time_diff'].fillna(0)
 df.sort_values(by=['timestamp'], inplace=True)
 print(df.head())
 print(df['time_diff'].describe())
-# result = df.groupby(df['timestamp'].diff().gt(timedelta(seconds=1)).cumsum()) \
-#            .apply(group_and_sum_within_interval).reset_index(drop=True)
-# result['total_size'] = result['total_size'].astype(float)
-# print(result)
-# plt.figure(figsize=(10, 6))  # Adjust the figure size if needed
 
-# Plot the data
-# plt.plot(result['start_datetime'], result['total_size'], marker='o', linestyle='-', color='b')
-#
-# # Add labels and title
-# plt.xlabel('Datetime')
-# plt.ylabel('Total Size')
-# plt.title('Total Size vs. Datetime')
-#
-# # Display the plot
-# plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
-# plt.tight_layout()  # Adjust layout for better spacing
-# plt.show()
 
-# print(df)
+start_time = None
+accumulated_length = 0
+
+# Create lists to store the results
+start_times = []
+total_lengths = []
+
+# Iterate through the DataFrame
+for index, row in df.iterrows():
+    if row['time_diff'] < 1:
+        accumulated_length += row['length']
+        if start_time is None:
+            start_time = row['timestamp']
+    else:
+        if start_time is not None:
+            start_times.append(start_time)
+            total_lengths.append(accumulated_length)
+        else:
+            print('start_time is None *****')
+        accumulated_length = 0
+        start_time = None
+
+result_df = pd.DataFrame({'start_time': start_times, 'total_length': total_lengths})
+# convert to MB
+result_df['total_length'] = result_df['total_length'] / 1048576
+print(result_df.head())
+print(result_df.info())
+print(result_df.describe())
+print(result_df.shape)
+
+plt.figure(figsize=(20, 10))
+plt.bar(result_df['start_time'], result_df['total_length'], width=0.0001)
+
+# Add labels and title
+plt.xlabel('Start Time')
+plt.ylabel('MB')
+plt.title('Total Length vs. Start Time')
+
+# Display the plot
+# plt.xticks(result_df['start_time'])
+# plt.tight_layout()
+plt.show()
