@@ -1,18 +1,7 @@
 import pyshark
 import pandas as pd
 import os
-from datetime import timedelta
 import matplotlib.pyplot as plt
-
-# def group_and_sum_within_interval(group):
-#     time_threshold = timedelta(seconds=2)
-#     within_interval = (group['timestamp'] - group['timestamp'].shift(1)) <= time_threshold
-#     grouped = group[within_interval]
-#     return pd.Series({
-#         'start_datetime': grouped['timestamp'].iloc[0],
-#         'total_size': grouped['length'].sum()
-#     })
-
 
 #  Convert pcap to csv
 def recording_to_csv(filename, recording):
@@ -39,12 +28,13 @@ def recording_to_csv(filename, recording):
     df.to_csv(filename, index=False)
 
 # recording_to_csv('filtered_recording_1.csv', 'filtered_recording_1.pcapng')
-recording_to_csv('filtered_recording_2.csv', 'filtered_recording_2.pcapng')
-df = pd.read_csv('filtered_recording_2.csv')
+recording_to_csv('filtered_recording_4.csv', 'recording_4.pcapng')
+df = pd.read_csv('filtered_recording_4.csv')
 df['timestamp'] = pd.to_datetime(df['timestamp'])
 print(df.info())
 print(df.head())
 
+# Calculate the time difference between consecutive packets
 df['time_diff'] = df['timestamp'] - df['timestamp'].shift(1)
 df['time_diff'] = df['time_diff'].dt.seconds + df['time_diff'].dt.microseconds / 1000000
 df['time_diff'] = df['time_diff'].fillna(0)
@@ -52,10 +42,9 @@ df.sort_values(by=['timestamp'], inplace=True)
 print(df.head())
 print(df['time_diff'].describe())
 
-
+# parameters to make the new DataFrame
 start_time = None
 accumulated_length = 0
-
 # Create lists to store the results
 start_times = []
 total_lengths = []
@@ -74,11 +63,12 @@ for index, row in df.iterrows():
             print('start_time is None *****')
         accumulated_length = 0
         start_time = None
-
 result_df = pd.DataFrame({'start_time': start_times, 'total_length': total_lengths})
 # Convert to MB
 result_df['total_length'] = result_df['total_length'] / 1048576
-# result_df['total_length'] = result_df['total_length'] ** 0.5  # To make small values more visible
+# To make small values more visible (only for large differences in sizes between messages)
+# result_df['total_length'] = result_df['total_length'] ** 0.5
+
 print(result_df.head())
 print(result_df.info())
 print(result_df.describe())
@@ -87,19 +77,32 @@ print(result_df.shape)
 plt.figure(figsize=(20, 10))
 plt.bar(result_df['start_time'], result_df['total_length'], width=0.0001)
 
+# Sizes of messages
 plt.xlabel('Start Time')
 plt.ylabel('MB')
 plt.title('Total Length and Start Time')
 plt.show()
 
-
+# Create the PDF
 plt.hist(df['time_diff'], bins=50, log=True)
-
-# Add labels and title
 plt.xlabel('Seconds')
 plt.ylabel('Frequency')
 plt.title('PDF of inter-messages delay')
-
-# Display the plot
 plt.show()
 
+# Create the CDF data
+sorted_sizes = result_df['total_length'].sort_values()
+
+# Calculate cumulative probabilities based on the rank of each value
+sorted_sizes = sorted_sizes / sorted_sizes.max()
+cumulative_prob = (sorted_sizes.rank() - 1) / len(sorted_sizes)
+cumulative_prob = 1 - cumulative_prob
+
+# Create a CDF plot
+plt.plot(sorted_sizes, cumulative_prob, marker='.', linestyle='-')
+plt.yscale('log')  # Use a logarithmic scale for the y-axis like the paper
+plt.xlabel('Size')
+plt.ylabel('Cumulative Probability')
+plt.title('Cumulative Distribution Function (CDF) of Sizes')
+plt.tight_layout()
+plt.show()
