@@ -1,5 +1,6 @@
 import pyshark
 import pandas as pd
+import os
 from datetime import timedelta
 import matplotlib.pyplot as plt
 
@@ -15,13 +16,14 @@ import matplotlib.pyplot as plt
 
 #  Convert pcap to csv
 def recording_to_csv(filename, recording):
-    pcap_file = recording #'filtered_recording_1.pcapng'
+    if os.path.exists(filename):
+        print("File already exists", filename)
+        return
+    pcap_file = recording
     capture = pyshark.FileCapture(pcap_file)
 
     packet_data = []
-    cnt = 0
     for packet in capture:
-        # print(packet.sniff_time)
         packet_info = {
             'timestamp': packet.sniff_time,
             'length': packet.length,
@@ -29,10 +31,6 @@ def recording_to_csv(filename, recording):
             'destination_ip': packet.IPV6.dst if hasattr(packet, 'IPV6') else None,
         }
         packet_data.append(packet_info)
-        # cnt += 1
-        # if cnt > 2700:
-        #     break
-        # print(packet_info)
 
     df = pd.DataFrame(packet_data)
     df['timestamp'] = pd.to_datetime(df['timestamp'])
@@ -41,8 +39,8 @@ def recording_to_csv(filename, recording):
     df.to_csv(filename, index=False)
 
 # recording_to_csv('filtered_recording_1.csv', 'filtered_recording_1.pcapng')
-# recording_to_csv('filtered_recording_2.csv', 'filtered_recording_2.pcapng')
-df = pd.read_csv('filtered_recording_1.csv')
+recording_to_csv('filtered_recording_2.csv', 'filtered_recording_2.pcapng')
+df = pd.read_csv('filtered_recording_2.csv')
 df['timestamp'] = pd.to_datetime(df['timestamp'])
 print(df.info())
 print(df.head())
@@ -78,9 +76,9 @@ for index, row in df.iterrows():
         start_time = None
 
 result_df = pd.DataFrame({'start_time': start_times, 'total_length': total_lengths})
-# convert to MB
-result_df['total_length'] = result_df['total_length'] / 1048576  # convert to MB
-# result_df['total_length'] = result_df['total_length'] ** 0.5  # to make small values more visible
+# Convert to MB
+result_df['total_length'] = result_df['total_length'] / 1048576
+# result_df['total_length'] = result_df['total_length'] ** 0.5  # To make small values more visible
 print(result_df.head())
 print(result_df.info())
 print(result_df.describe())
@@ -89,12 +87,19 @@ print(result_df.shape)
 plt.figure(figsize=(20, 10))
 plt.bar(result_df['start_time'], result_df['total_length'], width=0.0001)
 
-# Add labels and title
 plt.xlabel('Start Time')
 plt.ylabel('MB')
-plt.title('Total Length vs. Start Time')
+plt.title('Total Length and Start Time')
+plt.show()
+
+
+plt.hist(df['time_diff'], bins=50, log=True)
+
+# Add labels and title
+plt.xlabel('Seconds')
+plt.ylabel('Frequency')
+plt.title('PDF of inter-messages delay')
 
 # Display the plot
-# plt.xticks(result_df['start_time'])
-# plt.tight_layout()
 plt.show()
+
