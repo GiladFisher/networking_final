@@ -26,4 +26,11 @@ The script will output a bar graph of the data. The x-axis represents the time o
 ***Here is an example of the output:***
 ![graph_2](https://github.com/GiladFisher/networking_final/assets/97436308/83ecb145-412f-4802-ade8-0b3a0fb8c445)
 
+***PDF:***
+![PDF_2](https://github.com/GiladFisher/networking_final/assets/97436308/ef12bbfd-7847-49fb-a667-35dfd27b13b4)
+
+***CDF:***
+![CDF_2](https://github.com/GiladFisher/networking_final/assets/97436308/3e6a1959-2347-4146-aa6c-86d0e4bdd0c4)
+
+
 
