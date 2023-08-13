@@ -1,6 +1,6 @@
 # Packet Recording Analysis
 
-This Python script is designed to analyze recordings of encrypted packets from network captures saved in PCAP format. The script will form a dataframe representing secure instant messages sizes and time of transmission. The script will then plot the data in a bar graph.
+This Python script is designed to analyze recordings of encrypted packets from network captures saved in PCAP format. The script will form a dataframe representing secure instant messages sizes and time of transmission. The script will then plot the data in a bar graph. It will also show the PDF of inter-packet delays and the CDF of message sizes.
 
 ## Requirements
 
@@ -8,6 +8,7 @@ This Python script is designed to analyze recordings of encrypted packets from n
 - `pyshark` library
 - `pandas` library
 - `matplotlib` library
+- `os` library
 
 Install the required libraries using the following command:
 
