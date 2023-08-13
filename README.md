@@ -23,6 +23,6 @@ After running the script for the first time, a csv file will be created in the s
 The script will output a bar graph of the data. The x-axis represents the time of transmission and the y-axis represents the size of the message in MBs.
 
 ***Here is an example of the output:***
-![graph_2.PNG](..%2F..%2FDesktop%2Ffiles%20for%20project%2Frecording_2%2Fgraph_2.PNG)
+![graph_2](https://github.com/GiladFisher/networking_final/assets/97436308/83ecb145-412f-4802-ade8-0b3a0fb8c445)
 
 
