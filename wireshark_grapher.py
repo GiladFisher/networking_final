@@ -3,15 +3,17 @@ import pandas as pd
 from datetime import timedelta
 import matplotlib.pyplot as plt
 
-def group_and_sum_within_interval(group):
-    time_threshold = timedelta(seconds=2)
-    within_interval = (group['timestamp'] - group['timestamp'].shift(1)) <= time_threshold
-    grouped = group[within_interval]
-    return pd.Series({
-        'start_datetime': grouped['timestamp'].iloc[0],
-        'total_size': grouped['length'].sum()
-    })
+# def group_and_sum_within_interval(group):
+#     time_threshold = timedelta(seconds=2)
+#     within_interval = (group['timestamp'] - group['timestamp'].shift(1)) <= time_threshold
+#     grouped = group[within_interval]
+#     return pd.Series({
+#         'start_datetime': grouped['timestamp'].iloc[0],
+#         'total_size': grouped['length'].sum()
+#     })
 
+
+#  Convert pcap to csv
 def recording_to_csv(filename, recording):
     pcap_file = recording #'filtered_recording_1.pcapng'
     capture = pyshark.FileCapture(pcap_file)
