@@ -33,4 +33,4 @@ The script will output a bar graph of the data. The x-axis represents the time o
 ![CDF_2](https://github.com/GiladFisher/networking_final/assets/97436308/3e6a1959-2347-4146-aa6c-86d0e4bdd0c4)
 
 
-
+**Each folder has a summary of main results and an explanation of what we did.
