@@ -15,6 +15,8 @@ Install the required libraries using the following command:
 ```bash
 pip install pyshark pandas matplotlib
 ```
+Get examples of traffic recordings in the resources directory via the Google Drive link.
+
 ## Usage
 Simply replace the path in the arguments for recording_to_csv() with the path your own PCAP file and desired csv path and run the script. The script will output a bar graph of the data.
 
@@ -34,3 +36,5 @@ The script will output a bar graph of the data. The x-axis represents the time o
 
 
 **Each folder has a summary of main results and an explanation of what we did.
+
+***we used ChatGPT in this project***
